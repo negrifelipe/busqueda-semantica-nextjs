@@ -19,8 +19,18 @@ export async function agregarProducto(formData: FormData) {
     }
 
     // Generar el embedding combinando todos los campos
-    const textToEmbed = `${nombre} ${vendedor} ${descripcion}`;
-    const embedding = await generateEmbedding(textToEmbed);
+    /*
+    Los modelos tienen un limite de tokens, por lo que si la descripción es muy larga, no funcionanda.
+    Una cosa que se podria hacer es pedile a un modelo de lenguaje que cree un resumen y deje lo 
+    mas importante de la informacion del producto 
+     */
+    /*
+    Dependiendo de la escala y lo que uno necesita, se podria considerar 
+    agregar el producto a una cola y que otro servicio sea 
+    el encargado de generar el embedding y guardarlo en la base de datos
+     */
+    const resumen = `${nombre} ${vendedor} ${descripcion}`;
+    const embedding = await generateEmbedding(resumen);
 
     // Convertir el array de números a formato de vector de PostgreSQL
     const vectorString = `[${embedding.join(",")}]`;
@@ -66,10 +76,10 @@ export async function buscarProductos(query: string) {
         id, 
         nombre, 
         vendedor, 
-        embedding <=> ${vectorString}::vector as distancia
+        embedding <-> ${vectorString}::vector as distancia
       FROM productos
       WHERE embedding IS NOT NULL
-      ORDER BY embedding <=> ${vectorString}::vector
+      ORDER BY distancia
       LIMIT 3
     `;
 

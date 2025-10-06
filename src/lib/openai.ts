@@ -9,6 +9,6 @@ export async function generateEmbedding(text: string): Promise<number[]> {
     model: "text-embedding-3-small",
     input: text,
   });
-
+  // Quedaria en ustedes el manejo de errores. Para simplicidad asumirmos que la respuesta es success
   return response.data[0].embedding;
 }
