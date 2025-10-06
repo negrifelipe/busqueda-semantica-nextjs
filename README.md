@@ -78,7 +78,7 @@ Para esto usaré prisma y la función para ejecutar una query de SQL raw, ya que
 ```ts
 const resumen = `${nombre} ${vendedor} ${descripcion}`;
 
-const embedding = await generateEmbedding(textToEmbed);
+const embedding = await generateEmbedding(resumen);
 
 const vectorString = `[${embedding.join(",")}]`;
 
